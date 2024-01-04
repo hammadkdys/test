@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages {
+        stage('Docker Build') {
+            script{
+                sh "docker build -f Dockerfile -t node ."
+            }
+        }
+        stage('Docker Build') {
+            script{
+                sh "docker build -f Dockerfile -t node ."
+            }
+        }
+        stage('Docker Build') {
+            script{
+                sh "docker build -f Dockerfile -t node ."
+            }
+        }
+    }
+}
