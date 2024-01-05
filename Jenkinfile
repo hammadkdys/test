@@ -12,26 +12,26 @@ pipeline {
 }
 
 stage('SonarQube analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'SonarQube', variable: 'SonarToken')]) {
-                    script{
-                        def scannerHome = tool 'Sonar';
-                        withSonarQubeEnv("Sonar"){
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.host.url=${SonarHost} -Dsonar.projectKey=${SonarProjectID} -Dsonar.projectName=${SonarProjectName} -Dsonar.login=${SonarToken}"
-                        }
-                    }
+    steps {
+        withCredentials([string(credentialsId: 'sonarkey', variable: 'SonarToken')]) {
+            script{
+                def scannerHome = tool 'sonar';
+                withSonarQubeEnv("sonar"){
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.host.url=http://192.168.1.52:8500 -Dsonar.projectKey=hammad -Dsonar.projectName=hammad -Dsonar.login=${SonarToken}"
                 }
             }
         }
+    }
+}
 
-        stage('Quality Gate') {
-            steps {
-                script {
-                    // Check SonarQube Quality Gate status
-                    def qualityGate = waitForQualityGate() 
-                    if (qualityGate.status != 'OK') {
-                        error "Pipeline aborted due to Quality Gate failure: ${qualityGate.status}"
-                    }
-                }
+stage('Quality Gate') {
+    steps {
+        script {
+            // Check SonarQube Quality Gate status
+            def qualityGate = waitForQualityGate() 
+            if (qualityGate.status != 'OK') {
+                error "Pipeline aborted due to Quality Gate failure: ${qualityGate.status}"
             }
         }
+    }
+}
