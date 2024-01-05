@@ -1,13 +1,9 @@
 pipeline {
     agent any
+    environment{
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    }
     stages {
-        stage('Docker Build') {
-            steps{
-                script{
-                sh "docker build -f Dockerfile -t node ."
-            }
-            }
-        }
         stage('SonarQube analysis') {
             steps {
                 withCredentials([string(credentialsId: 'sonarkey', variable: 'SonarToken')]) {
@@ -30,6 +26,30 @@ pipeline {
                         error "Pipeline aborted due to Quality Gate failure: ${qualityGate.status}"
                     }
                 }
+            }
+        }
+
+        stage('Docker Build') {
+            steps{
+                script{
+                sh "docker build -f Dockerfile -t hammadkdys/node:$BUILD_NUMBER ."
+            }
+            }
+        }
+
+        stage('Docker Login') {
+            steps{
+                script{
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login DOCKERHUB_CREDENTIALS_USR --password=studin"
+            }
+            }
+        }
+
+        stage('Docker Upload') {
+            steps{
+                script{
+                sh "docker push hammadkdys/node:$BUILD_NUMBER"
+            }
             }
         }
     }
