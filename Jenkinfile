@@ -10,3 +10,28 @@ pipeline {
         }
     }
 }
+
+stage('SonarQube analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'SonarQube', variable: 'SonarToken')]) {
+                    script{
+                        def scannerHome = tool 'Sonar';
+                        withSonarQubeEnv("Sonar"){
+                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.host.url=${SonarHost} -Dsonar.projectKey=${SonarProjectID} -Dsonar.projectName=${SonarProjectName} -Dsonar.login=${SonarToken}"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    // Check SonarQube Quality Gate status
+                    def qualityGate = waitForQualityGate() 
+                    if (qualityGate.status != 'OK') {
+                        error "Pipeline aborted due to Quality Gate failure: ${qualityGate.status}"
+                    }
+                }
+            }
+        }
