@@ -29,6 +29,14 @@ pipeline {
             }
         }
 
+        stage('Gradle Build') {
+            steps{
+                script{
+                sh "./gradlew bootRun"
+            }
+            }
+        }
+
         stage('Docker Build') {
             steps{
                 script{

@@ -1,0 +1,34 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'com.moowork.node' version '1.6.0'
+}
+
+node {
+    version = '18.19.0' // Specify the Node.js version you want to use
+    npmVersion = '10.2.3' // Specify the npm version you want to use
+}
+
+task installNodeModules(type: NodeTask, dependsOn: 'npmInstall') {
+
+    workingDir = file('vitetest')
+
+    setScript 'install'
+}
+
+// Define a task to build the React application
+task buildReactApp(type: NodeTask, dependsOn: 'installNodeModules') {
+    workingDir = file('vitetest')
+
+setScript 'run'
+setArgs(['build']) // You can customize the npm build command here
+}
+
+// Define a task to copy the React build output to the Spring Boot resources directory
+//task copyReactBuild(type: Copy, dependsOn: 'buildReactApp') {
+//    from 'path/to/your/react/app/build'
+//    into 'src/main/resources/static' // Adjust this path based on your project structure
+//}
+
+// Set up dependencies
+bootRun.dependsOn 'buildReactApp'
