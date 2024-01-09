@@ -33,7 +33,7 @@ pipeline {
             steps{
                 script{
                     def gradleHome = tool 'gradle';
-                    sh "${gradleHome}/bin/gradle bootRun"
+                    sh "${gradleHome}/bin/gradle bootRun  --scan"
                     
                 }
             }
