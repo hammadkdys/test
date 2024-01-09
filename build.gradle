@@ -5,29 +5,20 @@ plugins {
 }
 
 node {
-    version = '18.19.0' // Specify the Node.js version you want to use
-    npmVersion = '10.2.3' // Specify the npm version you want to use
+    version = '18.19.0'
+    npmVersion = '10.2.3'
 }
 
 task installNodeModules(type: NodeTask) {
 
-    workingDir = file('vitetest')
+    workDir = file("${project.buildDir}/vitetest")
 
     args = ['install']
 }
 
-// Define a task to build the React application
 task buildReactApp(type: NodeTask, dependsOn: 'installNodeModules') {
-    workingDir = file('vitetest')
-
+workDir = file("${project.buildDir}/vitetest")
 args = ['run', 'build']
 }
 
-// Define a task to copy the React build output to the Spring Boot resources directory
-//task copyReactBuild(type: Copy, dependsOn: 'buildReactApp') {
-//    from 'path/to/your/react/app/build'
-//    into 'src/main/resources/static' // Adjust this path based on your project structure
-//}
-
-// Set up dependencies
 bootRun.dependsOn 'buildReactApp'
