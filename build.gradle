@@ -9,19 +9,18 @@ node {
     npmVersion = '10.2.3' // Specify the npm version you want to use
 }
 
-task installNodeModules(type: NodeTask, dependsOn: 'npmInstall') {
+task installNodeModules(type: NodeTask) {
 
     workingDir = file('vitetest')
 
-    setScript 'install'
+    args = ['install']
 }
 
 // Define a task to build the React application
 task buildReactApp(type: NodeTask, dependsOn: 'installNodeModules') {
     workingDir = file('vitetest')
 
-setScript 'run'
-setArgs(['build']) // You can customize the npm build command here
+args = ['run', 'build']
 }
 
 // Define a task to copy the React build output to the Spring Boot resources directory
