@@ -32,8 +32,10 @@ pipeline {
         stage('Gradle Build') {
             steps{
                 script{
-                sh "./gradlew bootRun"
-            }
+                    def gradleHome = tool 'gradle';
+                    sh "${gradleHome}/bin/gradle bootRun"
+                    
+                }
             }
         }
 
